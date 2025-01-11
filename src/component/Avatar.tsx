@@ -1,7 +1,7 @@
 import { Avatar, Button } from '@mui/material';
 import UpdateDetails from "./UpdateDetails";
 import { createContext, Dispatch, useContext, useState } from "react";
-import { ThemeUser } from './homePage';
+import { ThemeUser } from './Navbar';
 
 export const IsUpdate = createContext<[boolean, Dispatch<React.SetStateAction<boolean>>]>([false, () => null])
 

@@ -1,4 +1,5 @@
 export type UserType = {
+    id?:number,
     firstName?: string,
     lastName?: string,
     email?: string,
@@ -21,12 +22,28 @@ export type action = {
     data: Partial<UserType> & { email?: string }
 }
 
-export default (state: UserType, action: action): UserType => {
+import axios from "axios"
+const url="http://localhost:3000"
+
+const  actionUser= async (state: UserType, action: action) => {
     switch (action.type) {
         case 'ADD_USER':
-            if (state.email !== action.data.email && state.password !== action.data.password)
-                state = action.data
-            return state
+            console.log("add user");
+            
+                try {
+                    const res= await axios.post(`${url}/api/user/register`,
+                        {
+                            email: action.data.email,
+                            password :action.data.password
+                        }
+                    )
+                    state.id=res.data.userId
+                }
+                catch(e:any){
+                    console.log(e);
+                    if (e.status === 422)
+                        alert('user already sign up')
+                }
         case 'DELETE_USER':
             ////go to home!!!!
             return state//[...state.filter(u => u.email !== action.data.email)]
@@ -38,3 +55,5 @@ export default (state: UserType, action: action): UserType => {
             return state
     }
 }
+
+export default actionUser

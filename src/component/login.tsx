@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import { FormEvent, useContext, useRef, useState } from 'react';
-import { IsLogin, ThemeUser } from './homePage';
+import { IsLogin, ThemeUser } from './Navbar';
 
 
 
@@ -29,9 +29,12 @@ export default function Login() {
     const [, setLogin] = useContext(IsLogin)
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => {setOpen(false);}
+    const handleClose = () => { setOpen(false); }
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        console.log("login");
+        console.log(userContext, email.current?.value, password.current?.value);
+
         userContext.userDispatch(
             {
                 type: 'ADD_USER',
@@ -44,11 +47,12 @@ export default function Login() {
         handleClose()
         setLogin(true)
     }
-
+    console.log("loginnnnn");
+    
     return (
         <>
             <div>
-                <Button onClick={handleOpen}>Login</Button>
+                <Button onClick={handleOpen}>lkjhgfdssdfghjkl,mnbvcx</Button>
                 <Modal
                     open={open}
                     onClose={handleClose}

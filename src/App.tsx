@@ -1,5 +1,6 @@
-import Home from './component/homePage';
-import  { useEffect } from 'react';
+import { useEffect } from 'react';
+import { router } from './Router';
+import { RouterProvider } from 'react-router';
 
 function App() {
   useEffect(() => {
@@ -7,7 +8,7 @@ function App() {
   });
   return (
     <>
-    <Home></Home>
+      <RouterProvider router={router} />
     </>
   )
 }

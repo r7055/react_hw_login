@@ -1,6 +1,6 @@
 import { FormEvent, useContext, useRef, useState, useEffect } from "react"
 import { Box, Button, Modal, TextField, Typography } from "@mui/material"
-import { ThemeUser } from "./homePage";
+import { ThemeUser } from "./Navbar";
 import { IsUpdate } from "./Avatar";
 
 const updateDetails = () => {
@@ -30,6 +30,7 @@ const updateDetails = () => {
     const handleClose = () => {setOpen(false);}
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        
         userContext.userDispatch(
             {
                 type: 'UPDATE',
