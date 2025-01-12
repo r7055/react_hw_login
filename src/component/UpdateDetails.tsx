@@ -1,7 +1,8 @@
-import { FormEvent, useContext, useRef, useState, useEffect } from "react"
+import { FormEvent, useContext, useEffect, useState } from "react"
 import { Box, Button, Modal, TextField, Typography } from "@mui/material"
-import { ThemeUser } from "./Navbar";
-import { IsUpdate } from "./Avatar";
+import { UsrReducer } from "./Heder";
+import axios, { AxiosError } from "axios"
+import { UserType } from "../types/userType";
 
 const updateDetails = () => {
     const style = {
@@ -14,46 +15,62 @@ const updateDetails = () => {
         border: '2px solid #000',
         boxShadow: 24,
         p: 4,
-    };
-    const email = useRef<HTMLInputElement>(null)
-    const password = useRef<HTMLInputElement>(null)
-    const firstName = useRef<HTMLInputElement>(null)
-    const lastName = useRef<HTMLInputElement>(null)
-    const phon = useRef<HTMLInputElement>(null)
-    const address = useRef<HTMLInputElement>(null)
+    }
 
-    const userContext = useContext(ThemeUser)
-    const [,setIsUpdate]=useContext(IsUpdate)
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => {setOpen(false);}
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        
-        userContext.userDispatch(
-            {
-                type: 'UPDATE',
-                data: {
-                    firstName: firstName.current?.value,
-                    lastName: lastName.current?.value,
-                    email: email.current?.value,
-                    password: password.current?.value,
-                    address: address.current?.value,
-                    phon: phon.current?.value
-                }
-            }
+    const url = "http://localhost:3000"
+    const userContext = useContext(UsrReducer)
+    console.log(userContext.user);
+
+    const [user, setUser] = useState<UserType>(userContext.user)
+    const [open, setOpen] = useState(false)
+    const handleOpen = () => setOpen(true)
+    const handleClose = () => { setOpen(false) }
+    const handleChange = (e: { target: { name: any; value: any } }) => {
+        const { name, value } = e.target
+        setUser(
+            { ...user, [name]: value }
         )
-        setIsUpdate(false)
+    }
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        console.log("updat id", userContext.user.id);
+        try {
+            const res = await axios.put(`${url}/api/user`,
+                {
+                    ...user
+                },
+                {
+                    headers: {
+                        "user-id": "" + user.id
+                    }
+                }
+            )
+
+            userContext.userDispatch(
+                {
+                    type: 'UPDATE',
+                    data: res.data
+                }
+            )
+        } catch (e: AxiosError | any) {
+            if (e.response?.status === 401)
+                alert(e.response.data.message)
+            else if (!e.response.ok)
+                throw new Error(e.response.status + " " + e.response.data.message);
+        }
+
+
         handleClose()
     }
-    
-    useEffect(() => {
-        handleOpen()
-    }, [])
+
+
     return (<>
 
         <div>
+            <Button onClick={handleOpen} color='inherit'>update</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -66,13 +83,68 @@ const updateDetails = () => {
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         <form onSubmit={handleSubmit}>
-                            <div><TextField id="outlined-basic" inputRef={firstName} label="first name" variant="outlined" /></div>
-                            <div><TextField id="outlined-basic" inputRef={lastName} label="last name" variant="outlined" /></div>
-                            <div><TextField id="outlined-basic" inputRef={email} label="email" variant="outlined" /></div>
-                            <div><TextField id="outlined-basic" inputRef={password} label="password" variant="outlined" /></div>
-                            <div><TextField id="outlined-basic" inputRef={phon} label="phon" variant="outlined" /></div>
-                            <div><TextField id="outlined-basic" inputRef={address} label="address" variant="outlined" /></div>
-                            <div><Button type="submit">update</Button></div>
+                            <TextField
+                                id="outlined-basic"
+                                name="firstName"
+                                label="first name"
+                                variant="outlined"
+                                margin="normal"
+                                value={user.firstName}
+                                onChange={handleChange}
+                            />
+
+                            <TextField
+                                id="outlined-basic"
+                                name="lastName"
+                                label="last name"
+                                variant="outlined"
+                                margin="normal"
+                                value={user.lastName}
+                                onChange={handleChange}
+                            />
+
+                            <TextField
+                                id="outlined-basic"
+                                name="email"
+                                label="email"
+                                variant="outlined"
+                                margin="normal"
+                                value={user.email}
+                                onChange={handleChange}
+                            />
+
+                            {/* <TextField
+                                id="outlined-basic"
+                                name="password"
+                                label="password"
+                                variant="outlined"
+                                margin="normal"
+                                value={user.password}
+                                onChange={handleChange}
+                            /> */}
+
+                            <TextField
+                                id="outlined-basic"
+                                name="phon"
+                                label="phon"
+                                variant="outlined"
+                                margin="normal"
+                                value={user.phon}
+                                onChange={handleChange}
+                            />
+
+                            <TextField
+                                id="outlined-basic"
+                                name="address"
+                                label="address"
+                                variant="outlined"
+                                margin="normal"
+                                value={user.address}
+                                onChange={handleChange}
+                            />
+                            <div>
+                                <Button type="submit">update</Button>
+                            </div>
                         </form>
                     </Typography>
                 </Box>

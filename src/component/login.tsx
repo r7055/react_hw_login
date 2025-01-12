@@ -4,7 +4,8 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import { FormEvent, useContext, useRef, useState } from 'react';
-import { IsLogin, ThemeUser } from './Navbar';
+import { IsLogin, UsrReducer } from './Heder';
+import axios, { AxiosError } from "axios"
 
 
 
@@ -16,43 +17,75 @@ export default function Login() {
         transform: 'translate(-50%, -50%)',
         width: 400,
         bgcolor: 'background.paper',
-        border: '2px solid #000',
+        border: '2px solid #111',
         boxShadow: 24,
         p: 4,
     };
     const email = useRef<HTMLInputElement>(null)
     const password = useRef<HTMLInputElement>(null)
-
+    const [click, setClick] = useState("")
     const [open, setOpen] = useState(false);
-
-    const userContext = useContext(ThemeUser)
+    
+    const userContext = useContext(UsrReducer)
     const [, setLogin] = useContext(IsLogin)
-
-    const handleOpen = () => setOpen(true);
+    
     const handleClose = () => { setOpen(false); }
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleOpenSignIn = () => {
+        setClick("SIGN IN")
+        setOpen(true)
+    }
+    const handleOpenSignUp = () => {
+        setClick("SIGN UP")
+        setOpen(true)
+    }
+    
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log("login");
+        const url = "http://localhost:3000"
         console.log(userContext, email.current?.value, password.current?.value);
 
-        userContext.userDispatch(
-            {
-                type: 'ADD_USER',
-                data: {
+        try {
+            console.log(click);
+            const res = await axios.post(`${url}/api/user/${click === 'SIGN UP' ? 'register' : 'login'}`,
+                {
                     email: email.current?.value,
                     password: password.current?.value
                 }
-            }
-        )
-        handleClose()
-        setLogin(true)
+            )
+            console.log("logisn res", res);
+
+            userContext.userDispatch(
+                {
+                    type: 'ADD_USER',
+                    data: {
+                        id: res.data.user.id,
+                        email: res.data.user.email,
+                        password: res.data.user.password
+                    }
+                }
+            )
+            console.log("log", userContext.user);
+
+            setLogin(true)
+            handleClose()
+        }
+        catch (e: AxiosError | any) {
+            if (e.response?.status === 422)
+                alert(e.response.data.message)
+            else if (!e.response.ok)
+                console.log("not work    !!!!!!!!!!!!!!");
+
+            // throw new Error(e.response.status + " " + e.response.data.message);
+        }
+
     }
-    console.log("loginnnnn");
-    
+
     return (
         <>
             <div>
-                <Button onClick={handleOpen}>lkjhgfdssdfghjkl,mnbvcx</Button>
+                <Button onClick={handleOpenSignIn} color='inherit'>SIGN IN</Button>
+                <Button onClick={handleOpenSignUp} color='inherit'>SIGN UP</Button>
+
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -67,7 +100,7 @@ export default function Login() {
                             <form onSubmit={handleSubmit}>
                                 <div><TextField id="outlined-basic" inputRef={email} label="email" variant="outlined" /></div>
                                 <div><TextField id="outlined-basic" inputRef={password} label="password" variant="outlined" /></div>
-                                <div><Button type="submit">login</Button></div>
+                                <div><Button type="submit">save</Button></div>
                             </form>
                         </Typography>
                     </Box>
@@ -76,3 +109,6 @@ export default function Login() {
         </>
     )
 }
+
+
+

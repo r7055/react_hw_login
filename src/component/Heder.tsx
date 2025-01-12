@@ -1,54 +1,59 @@
-// import { createContext, Dispatch, useReducer, useState } from "react"
-// import userType, { action, UserType } from "../types/userType"
-// import Avatar from "./Avatar"
-// import Login from "./Login"
-// import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material"
-// import { Link, Outlet } from "react-router"
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import { Outlet } from 'react-router';
+import { createContext, Dispatch, useReducer, useState } from 'react';
+import  { action, actionUser, UserType } from '../types/userType';
+import Login from './Login';
+import Avatar from './Avatar';
+import Navbar from './Navbar';
+import UpdateDetails from './UpdateDetails';
 
+export const UsrReducer = createContext<{ user: UserType, userDispatch: Dispatch<action> }>(
+    {
+        user: {},
+        userDispatch: () => null
+    })
 
+export const IsLogin = createContext<[boolean, Dispatch<React.SetStateAction<boolean>>]>([false, () => null])
 
-// export const ThemeUser = createContext<{ user: UserType, userDispatch: Dispatch<action> }>(
-//     {
-//         user: {},
-//         userDispatch: () => null
-//     })
+const Header = () => {
 
-// export const IsLogin = createContext<[boolean, Dispatch<React.SetStateAction<boolean>>]>([false, () => null])
+    const [user, userDispatch] = useReducer(actionUser, {
+        id:0,
+        firstName:'',
+        lastName:'',
+        email:'',
+        password:'',
+        address:'',
+        phon:''
+    })
+    const [isLogin, setIsLogin] = useState(false)
+    console.log(isLogin);
+    return (
+        <IsLogin.Provider value={[isLogin, setIsLogin]}>
+            <UsrReducer.Provider value={{ user, userDispatch }} >
+                <Box sx={{ flexGrow: 1 }}>
+                    <AppBar position="static">
+                        <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Box>
+                                {!isLogin && <Login />}
+                                {/* <div style={{ display: 'flex', justifyContent: 'space-between' }}> */}
+                                    {isLogin && <Avatar />}
+                                    {isLogin && <UpdateDetails />}
+                                {/* </div> */}
+                            </Box>
 
-// const Heder = () => {
-//     const [user, userDispatch] = useReducer(userType, {} as UserType)
-//     const [isLogin, setIsLogin] = useState(false)
-//     return (
-//         <>
-//             <Box sx={{ flexGrow: 1 }}>
-//                 <AppBar position="static">
-//                     <Toolbar>
-//                         <IsLogin.Provider value={[isLogin, setIsLogin]}>
-//                             <ThemeUser.Provider value={{ user, userDispatch }} >
-//                                 <nav>
-//                                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-//                                         <Link to='/'>Home</Link>
-//                                     </Typography>
-//                                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-//                                         <Link to='/about'>About</Link>
-//                                     </Typography>
+                            <Box>
+                                <Navbar />
+                            </Box>
+                        </Toolbar>
+                    </AppBar>
+                    <Outlet />
+                </Box>
+            </UsrReducer.Provider>
+        </IsLogin.Provider>
+    );
+}
 
-//                                 </nav>
-//                                 <Outlet />
-//                                 {/* <Button onClick={handelLogin} color='inherit'>login</Button> */}
-//                                 <Button color='inherit'>logout</Button>
-//                                 {!isLogin && <Login></Login>}
-//                                 {isLogin && <Avatar></Avatar>}
-//                             </ThemeUser.Provider>
-//                         </IsLogin.Provider>
-//                     </Toolbar>
-//                 </AppBar>
-//             </Box>
-
-
-
-//         </>
-//     )
-// }
-
-// export default Heder
+export default Header

@@ -1,48 +1,41 @@
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import { Link, Outlet } from 'react-router';
-import { createContext, Dispatch, useReducer, useState } from 'react';
-import userType, { action, UserType } from '../types/userType';
-import Login from './Login';
-import Avatar from './Avatar';
+import { Typography } from "@mui/material"
+import { useState } from "react";
+import { Link } from "react-router"
 
-export const ThemeUser = createContext<{ user: UserType, userDispatch: Dispatch<action> }>(
-    {
-        user: {},
-        userDispatch: () => null
-    })
+const Navbar = () => {
+    const buttonStyle: React.CSSProperties = {
+        display: 'inline-block',
+        padding: '10px 20px',
+        backgroundColor: 'transparent',
+        color: 'white',
+        textAlign: 'center',
+        textDecoration: 'none',
+        borderRadius: '5px',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s',
+    };
 
-export const IsLogin = createContext<[boolean, Dispatch<React.SetStateAction<boolean>>]>([false, () => null])
+    const hoverStyle: React.CSSProperties = {
+        backgroundColor: '#0056b3',
+    }
+    const [isHoveredHome, setIsHoveredHome] = useState(false);
+    const [isHoveredAbout, setIsHoveredAboute] = useState(false);
+    return (<>
 
-export default function MenuAppBar() {
-
-    const [user, userDispatch] = useReducer(userType, {} as UserType)
-    const [isLogin, setIsLogin] = useState(false)
-    console.log(isLogin);
-    return (
-        <IsLogin.Provider value={[isLogin, setIsLogin]}>
-            <ThemeUser.Provider value={{ user, userDispatch }} >
-                <Box sx={{ flexGrow: 1 }}>
-                    <AppBar position="static">
-                        <Toolbar>
-                            <nav>
-                                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                                    <Link to='/'>Home</Link>
-                                </Typography>
-                                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                                    <Link to='/about'>About</Link>
-                                </Typography>
-                            </nav>
-                            {!isLogin && <Login />}
-                            {isLogin && <Avatar />}
-                        </Toolbar>
-                    </AppBar>
-                    <Outlet />
-                </Box>
-            </ThemeUser.Provider>
-        </IsLogin.Provider>
-    );
+        <nav>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 0.5 }}>
+                <Link style={{ ...buttonStyle, ...(isHoveredHome ? hoverStyle : {}) }}
+                    onMouseEnter={() => setIsHoveredHome(true)}
+                    onMouseLeave={() => setIsHoveredHome(false)} 
+                    to='/'>Home</Link>
+            </Typography>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 0 }}>
+                <Link style={{ ...buttonStyle, ...(isHoveredAbout ? hoverStyle : {}) }}
+                    onMouseEnter={() => setIsHoveredAboute(true)}
+                    onMouseLeave={() => setIsHoveredAboute(false)} to='/about'>About</Link>
+            </Typography>
+        </nav>
+    </>)
 }
-
+export default Navbar

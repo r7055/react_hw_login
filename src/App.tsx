@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { router } from './Router';
-import { RouterProvider } from 'react-router';
+import { Outlet, RouterProvider } from 'react-router';
+// import Header from './component/Heder';
 
 function App() {
   useEffect(() => {
@@ -8,6 +9,7 @@ function App() {
   });
   return (
     <>
+     {/* <Header/> */}
       <RouterProvider router={router} />
     </>
   )
