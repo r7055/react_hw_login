@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import { FormEvent, useContext, useRef, useState } from 'react';
-import { IsLogin, UsrReducer } from './Heder';
+import { IsLogin, UsrReducer } from './Header';
 import axios, { AxiosError } from "axios"
 
 
@@ -25,10 +25,10 @@ export default function Login() {
     const password = useRef<HTMLInputElement>(null)
     const [click, setClick] = useState("")
     const [open, setOpen] = useState(false);
-    
+
     const userContext = useContext(UsrReducer)
     const [, setLogin] = useContext(IsLogin)
-    
+
     const handleClose = () => { setOpen(false); }
     const handleOpenSignIn = () => {
         setClick("SIGN IN")
@@ -38,34 +38,33 @@ export default function Login() {
         setClick("SIGN UP")
         setOpen(true)
     }
-    
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const url = "http://localhost:3000"
-        console.log(userContext, email.current?.value, password.current?.value);
+        console.log(email.current?.value);
 
         try {
-            console.log(click);
             const res = await axios.post(`${url}/api/user/${click === 'SIGN UP' ? 'register' : 'login'}`,
                 {
                     email: email.current?.value,
                     password: password.current?.value
                 }
             )
-            console.log("logisn res", res);
+            console.log(email.current?.value);
 
             userContext.userDispatch(
                 {
-                    type: 'ADD_USER',
-                    data: {
-                        id: res.data.user.id,
-                        email: res.data.user.email,
-                        password: res.data.user.password
-                    }
+                    type: 'LOGIN',
+                    data: click === 'SIGN UP' ?
+                        {
+                            id: res.data.userId,
+                            email: email.current?.value,
+                            password: password.current?.value
+                        } :
+                        { ...res.data.user }
                 }
             )
-            console.log("log", userContext.user);
-
             setLogin(true)
             handleClose()
         }
@@ -73,9 +72,7 @@ export default function Login() {
             if (e.response?.status === 422)
                 alert(e.response.data.message)
             else if (!e.response.ok)
-                console.log("not work    !!!!!!!!!!!!!!");
-
-            // throw new Error(e.response.status + " " + e.response.data.message);
+                throw new Error(e.response.status + " " + e.response.data.message);
         }
 
     }
@@ -98,8 +95,8 @@ export default function Login() {
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             <form onSubmit={handleSubmit}>
-                                <div><TextField id="outlined-basic" inputRef={email} label="email" variant="outlined" /></div>
-                                <div><TextField id="outlined-basic" inputRef={password} label="password" variant="outlined" /></div>
+                                <div><TextField id="outlined-basic" inputRef={email} label="email" variant="outlined" type='email'/></div>
+                                <div><TextField id="outlined-basic" inputRef={password} label="password" variant="outlined" type='password'/></div>
                                 <div><Button type="submit">save</Button></div>
                             </form>
                         </Typography>

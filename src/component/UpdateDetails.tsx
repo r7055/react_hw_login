@@ -1,6 +1,6 @@
-import { FormEvent, useContext, useEffect, useState } from "react"
+import { FormEvent, useContext, useState } from "react"
 import { Box, Button, Modal, TextField, Typography } from "@mui/material"
-import { UsrReducer } from "./Heder";
+import { UsrReducer } from "./Header";
 import axios, { AxiosError } from "axios"
 import { UserType } from "../types/userType";
 
@@ -36,7 +36,7 @@ const updateDetails = () => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        console.log("updat id", userContext.user.id);
+        console.log("updat id", userContext.user.id,user);
         try {
             const res = await axios.put(`${url}/api/user`,
                 {
@@ -48,7 +48,8 @@ const updateDetails = () => {
                     }
                 }
             )
-
+            console.log("update res,",res.data);
+            
             userContext.userDispatch(
                 {
                     type: 'UPDATE',
@@ -104,6 +105,7 @@ const updateDetails = () => {
                             />
 
                             <TextField
+                                type="email"
                                 id="outlined-basic"
                                 name="email"
                                 label="email"

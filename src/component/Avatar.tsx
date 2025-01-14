@@ -1,6 +1,6 @@
 import { Avatar } from '@mui/material';
 import { useContext } from "react";
-import { UsrReducer } from './Heder';
+import { UsrReducer } from './Header';
 
 
 const avatar = () => {

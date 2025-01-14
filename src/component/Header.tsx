@@ -3,11 +3,12 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import { Outlet } from 'react-router';
 import { createContext, Dispatch, useReducer, useState } from 'react';
-import  { action, actionUser, UserType } from '../types/userType';
-import Login from './Login';
 import Avatar from './Avatar';
 import Navbar from './Navbar';
 import UpdateDetails from './UpdateDetails';
+import Login from './login';
+import { action, actionUser } from '../types/userActionType';
+import { UserType } from '../types/userType';
 
 export const UsrReducer = createContext<{ user: UserType, userDispatch: Dispatch<action> }>(
     {
@@ -29,7 +30,7 @@ const Header = () => {
         phon:''
     })
     const [isLogin, setIsLogin] = useState(false)
-    console.log(isLogin);
+    
     return (
         <IsLogin.Provider value={[isLogin, setIsLogin]}>
             <UsrReducer.Provider value={{ user, userDispatch }} >

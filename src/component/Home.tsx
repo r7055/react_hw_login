@@ -5,6 +5,8 @@ const home = () => {
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <Home />
             <h1>home</h1>
+            <div>Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Tenetur quam nostrum quibusdam voluptate quo rerum nisi! Iusto veritatis quasi corporis, est ipsum a amet, quis culpa dolorum laboriosam omnis! Cumque!</div>
         </div>
     </>)
 }
